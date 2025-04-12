@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.finbot"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.finbot"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
