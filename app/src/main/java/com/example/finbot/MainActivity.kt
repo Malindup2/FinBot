@@ -1,20 +1,55 @@
 package com.example.finbot
-
+import android.view.MenuItem
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import com.example.finbot.databinding.ActivityMainBinding
+import com.example.finbot.fragment.earningFragment
+import com.example.finbot.fragment.profileFragment
+import com.example.finbot.fragment.statFragment
+import com.example.finbot.fragments.homeFragment
+
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Load the default fragment (HomeFragment)
+        loadFragment(homeFragment())
+
+        // Set up bottom navigation
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    loadFragment(homeFragment())
+                    true
+                }
+                R.id.nav_stat -> {
+                    loadFragment(statFragment())
+                    true
+                }
+                R.id.nav_earning -> {
+                    loadFragment(earningFragment())
+                    true
+                }
+                R.id.nav_profile -> {
+                    loadFragment(profileFragment())
+                    true
+                }
+                else -> false
+            }
         }
+    }
+
+    // Helper function to load fragments
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 }
