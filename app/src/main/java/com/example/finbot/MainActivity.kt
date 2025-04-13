@@ -7,6 +7,8 @@ import com.example.finbot.databinding.ActivityMainBinding
 import com.example.finbot.fragment.profileFragment
 import com.example.finbot.fragment.statFragment
 import com.example.finbot.fragments.homeFragment
+import com.example.finbot.fragment.AddExpenseFragment
+
 import earningFragment
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +34,11 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(statFragment())
                     true
                 }
+                R.id.nav_add -> {
+                    loadFragment(AddExpenseFragment())
+                    true
+                }
+
                 R.id.nav_earning -> {
                     loadFragment(earningFragment())
                     true
