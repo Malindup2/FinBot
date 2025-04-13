@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:fillViewport="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Statistics Title -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,19 +22,18 @@
             android:fontFamily="@font/google_sans_bold"
             android:layout_marginBottom="16dp"/>
 
+        <!-- Period Selection Chips -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:scrollbars="none">
-
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/periodChipGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:singleSelection="true"
                 app:selectionRequired="true">
-
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipWeek"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -44,7 +43,6 @@
                     android:textColor="@color/white"
                     android:text="Week"
                     android:checked="true" />
-
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipMonth"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -53,8 +51,6 @@
                     android:backgroundTint="@color/Blue"
                     android:textColor="@color/white"
                     android:text="Month" />
-
-
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipYear"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -72,7 +68,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="16dp">
-
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -80,21 +75,18 @@
                 android:layout_marginEnd="8dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:background="@color/Blue">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Spent"
                         android:textSize="14sp"
                         android:textColor="#FFFFFF" />
-
                     <TextView
                         android:id="@+id/totalSpentText"
                         android:layout_width="wrap_content"
@@ -105,7 +97,6 @@
                         android:fontFamily="@font/google_sans_bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -113,21 +104,18 @@
                 android:layout_marginStart="8dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:background="@color/food">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Highest Category"
                         android:textSize="14sp"
                         android:textColor="#FFFFFF" />
-
                     <TextView
                         android:id="@+id/highestCategoryText"
                         android:layout_width="wrap_content"
@@ -147,7 +135,6 @@
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,9 +154,10 @@
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChart"
                     android:layout_width="match_parent"
-                    android:layout_height="280dp" />
-
-                <!-- Legend Container -->
+                    android:layout_height="280dp"
+                    android:layout_marginBottom="16dp"
+                    />
+                <!-- Dynamic Legend Container -->
                 <LinearLayout
                     android:id="@+id/legendContainer"
                     android:layout_width="match_parent"
@@ -177,101 +165,12 @@
                     android:orientation="vertical"
                     android:layout_marginTop="16dp">
 
-                    <!-- Legend Item 1 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
-
-                        <View
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:background="@color/food"
-                            android:layout_gravity="center_vertical" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Food"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:layout_marginStart="8dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="35%"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/google_sans_bold" />
-                    </LinearLayout>
-
-                    <!-- Legend Item 2 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
-
-                        <View
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:background="@color/shopping"
-                            android:layout_gravity="center_vertical" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Shopping"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:layout_marginStart="8dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="25%"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/google_sans_bold" />
-                    </LinearLayout>
-
-                    <!-- Legend Item 3 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <View
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:background="@color/transport"
-                            android:layout_gravity="center_vertical" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Transport"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:layout_marginStart="8dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="20%"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/google_sans_bold" />
-                    </LinearLayout>
+                    <!-- Legend Items will be dynamically added here -->
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Line Chart Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -279,14 +178,12 @@
             android:background="@color/SecondaryBtn"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@color/SecondaryBtn"
                 android:padding="16dp">
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

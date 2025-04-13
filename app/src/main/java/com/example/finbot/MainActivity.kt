@@ -4,11 +4,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.finbot.databinding.ActivityMainBinding
-import com.example.finbot.fragment.earningFragment
 import com.example.finbot.fragment.profileFragment
 import com.example.finbot.fragment.statFragment
 import com.example.finbot.fragments.homeFragment
-
+import earningFragment
 
 class MainActivity : AppCompatActivity() {
 
