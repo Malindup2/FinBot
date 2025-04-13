@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Category"
+        android:textColor="@color/black"
+        android:textColorHint="@color/Grey"
         android:inputType="text" />
 
     <EditText
@@ -17,6 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Amount"
+        android:textColor="@color/black"
+        android:textColorHint="@color/Grey"
         android:inputType="numberDecimal"
         android:layout_marginTop="8dp" />
 

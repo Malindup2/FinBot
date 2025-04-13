@@ -55,7 +55,8 @@ class earningFragment : Fragment() {
         val categoryInput = dialogView.findViewById<EditText>(R.id.categoryInput)
         val amountInput = dialogView.findViewById<EditText>(R.id.amountInput)
         val dateInput = dialogView.findViewById<TextView>(R.id.dateInput)
-
+        dateInput.setTextColor(resources.getColor(R.color.black, null))
+        amountInput.setTextColor(resources.getColor(R.color.black, null))
 
         // Set default date
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
