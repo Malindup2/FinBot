@@ -6,4 +6,25 @@
     </style>
 
     <style name="Theme.FinBot" parent="Base.Theme.FinBot" />
+
+
+
+    <!-- In res/values/styles.xml -->
+    <style name="CustomDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/popup</item>
+        <item name="colorPrimary">@color/Blue</item>
+        <item name="android:textColorPrimary">@color/Blue</item>
+        <!-- Add hint color -->
+        <item name="android:textColorHint">@color/Blue</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/Blue</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/Blue</item>
+    </style>
 </resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <!-- Earning Text -->
+    <TextView
+        android:id="@+id/earningTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="LKR 50,000"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/google_sans_medium" />
+
+    <!-- Edit Icon -->
+    <ImageView
+        android:id="@+id/editIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/edit"
+        android:tint="@color/Blue"
+        android:contentDescription="Edit Earning"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Delete Icon -->
+    <ImageView
+        android:id="@+id/deleteIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/delete"
+        android:contentDescription="Delete Earning" />
+</LinearLayout>

@@ -56,12 +56,13 @@ class earningFragment : Fragment() {
         val amountInput = dialogView.findViewById<EditText>(R.id.amountInput)
         val dateInput = dialogView.findViewById<TextView>(R.id.dateInput)
 
+
         // Set default date
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         dateInput.text = currentDate
 
         // Show dialog
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext(),R.style.CustomDialogTheme)
             .setTitle("Add Earning")
             .setView(dialogView)
             .setPositiveButton("Submit") { _, _ ->
