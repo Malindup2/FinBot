@@ -10,9 +10,15 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finbot.R
 import com.example.finbot.model.Expense
+import com.example.finbot.util.SharedPreferencesManager
 
-class ExpenseAdapter(private val context: Context, private val expenses: List<Expense>) :
-    RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
+class ExpenseAdapter(
+    private val context: Context, 
+    private val expenses: List<Expense>,
+    private val onItemClickListener: ((Expense) -> Unit)? = null
+) : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
+
+    private val sharedPrefsManager = SharedPreferencesManager.getInstance(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_expense, parent, false)
@@ -21,12 +27,13 @@ class ExpenseAdapter(private val context: Context, private val expenses: List<Ex
 
     override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
         val expense = expenses[position]
+        val currency = sharedPrefsManager.getCurrency()
 
         // Set icon, category, date/time, and amount
         holder.icon.setImageResource(expense.iconResId)
         holder.category.text = expense.category
         holder.date_time.text = "${expense.date} ${expense.time}"
-        holder.amount.text = "LKR ${expense.amount}"
+        holder.amount.text = "$currency ${expense.amount}"
 
         // Dynamically set the background color of the CardView based on categoryId
         when (expense.categoryId) {
@@ -36,6 +43,13 @@ class ExpenseAdapter(private val context: Context, private val expenses: List<Ex
             4 -> holder.iconCardView.setCardBackgroundColor(context.getColor(R.color.health)) // Health
             5 -> holder.iconCardView.setCardBackgroundColor(context.getColor(R.color.Blue)) // Utility
             else -> holder.iconCardView.setCardBackgroundColor(context.getColor(R.color.white)) // Default
+        }
+        
+        // Set click listener
+        if (onItemClickListener != null) {
+            holder.itemView.setOnClickListener {
+                onItemClickListener.invoke(expense)
+            }
         }
     }
 

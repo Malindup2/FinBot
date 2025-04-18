@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment
 import com.example.finbot.MainActivity
 import com.example.finbot.R
 import com.example.finbot.model.Expense
+import com.example.finbot.util.NotificationHelper
+import com.example.finbot.util.SharedPreferencesManager
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,11 +25,18 @@ class AddExpenseFragment : Fragment() {
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
     private val calendar = Calendar.getInstance()
+    
+    private lateinit var sharedPrefsManager: SharedPreferencesManager
+    private lateinit var notificationHelper: NotificationHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_expense, container, false)
+
+        // Initialize managers
+        sharedPrefsManager = SharedPreferencesManager.getInstance(requireContext())
+        notificationHelper = NotificationHelper.getInstance(requireContext())
 
         // Initialize views
         expenseNameInput = view.findViewById(R.id.expenseNameInput)
@@ -81,14 +91,23 @@ class AddExpenseFragment : Fragment() {
         if (name.isNotEmpty() && amount.isNotEmpty()) {
             val iconResId = getCategoryIconResId(category)
             val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+            val categoryId = getCategoryId(category)
 
             // Create expense
-            val expense = Expense(iconResId, category, date, time, amount, getCategoryId(category))
+            val expense = Expense(iconResId, category, date, time, amount, categoryId)
 
-            // TODO: Save expense to database/storage
-
-            // Return to previous fragment
-            requireActivity().supportFragmentManager.popBackStack()
+            // Save expense using SharedPreferencesManager
+            sharedPrefsManager.addExpense(expense)
+            
+            // Show success message
+            Snackbar.make(requireView(), "Expense saved successfully", Snackbar.LENGTH_SHORT).show()
+            
+            // Check if budget alert should be shown
+            notificationHelper.checkAndShowBudgetAlertIfNeeded()
+            
+            // Navigate to home fragment
+            (requireActivity() as MainActivity).loadFragment((requireActivity() as MainActivity).supportFragmentManager.findFragmentByTag("homeFragment") 
+                ?: com.example.finbot.fragments.homeFragment())
         } else {
             Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
         }
