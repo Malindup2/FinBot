@@ -30,6 +30,7 @@ class homeFragment : Fragment() {
     private lateinit var progressPercentage: TextView
     private lateinit var spentPercentText: TextView
     private lateinit var limitText: TextView
+    private lateinit var welcomeText: TextView
     private lateinit var sharedPrefsManager: SharedPreferencesManager
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var adapter: ExpenseAdapter
@@ -58,10 +59,15 @@ class homeFragment : Fragment() {
         progressPercentage = view.findViewById(R.id.progressPercentage)
         spentPercentText = view.findViewById(R.id.spentPercentText)
         limitText = view.findViewById(R.id.limitText)
+        welcomeText = view.findViewById(R.id.welcomeText)
         
         // Set up RecyclerView with fixed height issue
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.isNestedScrollingEnabled = true
+
+        // Update welcome text with user's name
+        val userName = sharedPrefsManager.getUserName()
+        welcomeText.text = "Welcome, $userName!"
 
         return view
     }
@@ -124,7 +130,7 @@ class homeFragment : Fragment() {
     private fun showExpenseOptionsDialog(expense: Expense) {
         val options = arrayOf("Edit", "Delete")
         
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext(), R.style.CustomDialogTheme)
             .setTitle("Expense Options")
             .setItems(options) { _, which ->
                 when (which) {
@@ -244,7 +250,7 @@ class homeFragment : Fragment() {
     }
     
     private fun deleteExpense(expense: Expense) {
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext(), R.style.CustomDialogTheme)
             .setTitle("Delete Expense")
             .setMessage("Are you sure you want to delete this expense?")
             .setPositiveButton("Delete") { _, _ ->
