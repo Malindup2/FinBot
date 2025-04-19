@@ -72,12 +72,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="@color/SecondaryBtn"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/SecondaryBtn"
                 android:orientation="vertical"
                 android:padding="16dp">
                 <TextView
@@ -125,11 +125,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
-            android:background="@color/SecondaryBtn"
             app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/SecondaryBtn"
                 android:orientation="vertical"
                 android:padding="16dp">
                 <TextView
@@ -227,12 +227,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="@color/SecondaryBtn"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/SecondaryBtn"
                 android:orientation="vertical"
                 android:padding="16dp">
                 <TextView
