@@ -93,8 +93,8 @@ class AddExpenseFragment : Fragment() {
             val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
             val categoryId = getCategoryId(category)
 
-            // Create expense
-            val expense = Expense(iconResId, category, date, time, amount, categoryId)
+            // Create expense with name included
+            val expense = Expense(iconResId, name, category, date, time, amount, categoryId)
 
             // Save expense using SharedPreferencesManager
             sharedPrefsManager.addExpense(expense)

@@ -14,6 +14,7 @@ import com.example.finbot.adapter.ExpenseAdapter
 import com.example.finbot.model.Expense
 import com.example.finbot.util.NotificationHelper
 import com.example.finbot.util.SharedPreferencesManager
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 
 class homeFragment : Fragment() {
@@ -22,6 +23,10 @@ class homeFragment : Fragment() {
     private lateinit var emptyStateTextView: TextView
     private lateinit var totalExpenseTextView: TextView
     private lateinit var budgetTextView: TextView
+    private lateinit var progressBar: LinearProgressIndicator
+    private lateinit var progressPercentage: TextView
+    private lateinit var spentPercentText: TextView
+    private lateinit var limitText: TextView
     private lateinit var sharedPrefsManager: SharedPreferencesManager
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var adapter: ExpenseAdapter
@@ -43,8 +48,14 @@ class homeFragment : Fragment() {
         emptyStateTextView = view.findViewById(R.id.emptyStateText)
         totalExpenseTextView = view.findViewById(R.id.totalExpenseText)
         budgetTextView = view.findViewById(R.id.budgetText)
+        progressBar = view.findViewById(R.id.progressBar)
+        progressPercentage = view.findViewById(R.id.progressPercentage)
+        spentPercentText = view.findViewById(R.id.spentPercentText)
+        limitText = view.findViewById(R.id.limitText)
         
+        // Set up RecyclerView with fixed height issue
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.isNestedScrollingEnabled = true
 
         return view
     }
@@ -81,16 +92,26 @@ class homeFragment : Fragment() {
         val budget = sharedPrefsManager.getMonthlyBudget()
         val percentUsed = sharedPrefsManager.getCurrentBudgetUsagePercent()
         
-        totalExpenseTextView.text = "Total Expenses: $currency $totalExpenses"
+        // Update text views
+        totalExpenseTextView.text = "$currency $totalExpenses"
         budgetTextView.text = "Budget: $currency $budget ($percentUsed% used)"
         
-        // Change text color based on budget status
+        // Update progress bar and related text
+        progressBar.progress = percentUsed
+        progressPercentage.text = "$percentUsed%"
+        spentPercentText.text = "Spent: $percentUsed%"
+        limitText.text = "of $currency $budget limit"
+        
+        // Change colors based on budget status
         if (percentUsed > 90) {
             budgetTextView.setTextColor(requireContext().getColor(R.color.shopping)) // Red
+            progressBar.setIndicatorColor(requireContext().getColor(R.color.shopping))
         } else if (percentUsed > 75) {
             budgetTextView.setTextColor(requireContext().getColor(R.color.transport)) // Orange
+            progressBar.setIndicatorColor(requireContext().getColor(R.color.transport))
         } else {
             budgetTextView.setTextColor(requireContext().getColor(R.color.food)) // Green
+            progressBar.setIndicatorColor(requireContext().getColor(R.color.Blue))
         }
     }
     

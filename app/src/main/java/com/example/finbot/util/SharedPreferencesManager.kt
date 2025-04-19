@@ -118,6 +118,7 @@ class SharedPreferencesManager(context: Context) {
     fun updateExpense(oldExpense: Expense, newExpense: Expense) {
         val expenses = getExpenses().toMutableList()
         val index = expenses.indexOfFirst { 
+            it.name == oldExpense.name && 
             it.category == oldExpense.category && 
             it.date == oldExpense.date && 
             it.time == oldExpense.time && 
@@ -132,6 +133,7 @@ class SharedPreferencesManager(context: Context) {
     fun deleteExpense(expense: Expense) {
         val expenses = getExpenses().toMutableList()
         expenses.removeIf { 
+            it.name == expense.name && 
             it.category == expense.category && 
             it.date == expense.date && 
             it.time == expense.time && 

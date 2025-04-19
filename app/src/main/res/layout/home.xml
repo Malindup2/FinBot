@@ -79,6 +79,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/spentPercentText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Spent: 65%"
@@ -87,6 +88,7 @@
                     android:fontFamily="@font/google_sans_medium"/>
 
                 <TextView
+                    android:id="@+id/limitText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -253,8 +255,6 @@
                 </LinearLayout>
 
                 <!-- Category 4 -->
-
-                <!-- Category 5 -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -286,6 +286,7 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+                <!-- Category 5 -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -330,7 +331,7 @@
             android:fontFamily="@font/google_sans_bold"
             android:layout_marginBottom="16dp"/>
             
-        <!-- Empty state mess+age -->
+        <!-- Empty state message -->
         <TextView
             android:id="@+id/emptyStateText"
             android:layout_width="match_parent"
@@ -347,10 +348,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/expensesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            android:paddingBottom="80dp"
+            android:nestedScrollingEnabled="true"
+            android:paddingBottom="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
 </ScrollView>

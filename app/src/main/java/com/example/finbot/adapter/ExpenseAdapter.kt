@@ -29,9 +29,9 @@ class ExpenseAdapter(
         val expense = expenses[position]
         val currency = sharedPrefsManager.getCurrency()
 
-        // Set icon, category, date/time, and amount
+        // Set icon, name (instead of category), date/time, and amount
         holder.icon.setImageResource(expense.iconResId)
-        holder.category.text = expense.category
+        holder.category.text = expense.name
         holder.date_time.text = "${expense.date} ${expense.time}"
         holder.amount.text = "$currency ${expense.amount}"
 
