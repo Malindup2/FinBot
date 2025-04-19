@@ -1,11 +1,12 @@
 package com.example.finbot.fragments
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,8 @@ import com.example.finbot.util.NotificationHelper
 import com.example.finbot.util.SharedPreferencesManager
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.*
 
 class homeFragment : Fragment() {
 
@@ -30,6 +33,9 @@ class homeFragment : Fragment() {
     private lateinit var sharedPrefsManager: SharedPreferencesManager
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var adapter: ExpenseAdapter
+    
+    // Categories used for expense spinner
+    private val categories = arrayOf("Food", "Shopping", "Transport", "Health", "Utility", "Other")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -130,9 +136,111 @@ class homeFragment : Fragment() {
     }
     
     private fun editExpense(expense: Expense) {
-        // For now, we'll just implement deletion
-        // Full edit functionality would require a separate dialog or fragment
-        Snackbar.make(requireView(), "Edit functionality coming soon", Snackbar.LENGTH_SHORT).show()
+        // Create a dialog view for editing expense
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.fragment_add_expense, null)
+        
+        // Initialize views in the dialog
+        val nameInput = dialogView.findViewById<EditText>(R.id.expenseNameInput)
+        val categorySpinner = dialogView.findViewById<Spinner>(R.id.categorySpinner)
+        val dateInput = dialogView.findViewById<TextView>(R.id.dateInput)
+        val amountInput = dialogView.findViewById<EditText>(R.id.amountInput)
+        
+        // Setup spinner
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories)
+        categorySpinner.adapter = adapter
+        
+        // Pre-fill with existing expense data
+        nameInput.setText(expense.name)
+        val categoryIndex = categories.indexOf(expense.category)
+        if (categoryIndex >= 0) {
+            categorySpinner.setSelection(categoryIndex)
+        }
+        dateInput.text = expense.date
+        amountInput.setText(expense.amount)
+        
+        // Set text colors to ensure visibility
+        dateInput.setTextColor(resources.getColor(R.color.black, null))
+        amountInput.setTextColor(resources.getColor(R.color.black, null))
+        
+        // Setup date picker
+        val calendar = Calendar.getInstance()
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        
+        try {
+            // Parse existing date
+            val date = dateFormatter.parse(expense.date)
+            if (date != null) {
+                calendar.time = date
+            }
+        } catch (e: Exception) {
+            // Use current date if parsing fails
+        }
+        
+        dateInput.setOnClickListener {
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                dateInput.text = dateFormatter.format(calendar.time)
+            }, year, month, day).show()
+        }
+        
+        // Show dialog
+        AlertDialog.Builder(requireContext(), R.style.CustomDialogTheme)
+            .setTitle("Edit Expense")
+            .setView(dialogView)
+            .setPositiveButton("Update") { _, _ ->
+                val name = nameInput.text.toString().trim()
+                val category = categorySpinner.selectedItem.toString()
+                val date = dateInput.text.toString()
+                val amount = amountInput.text.toString().trim()
+                
+                if (name.isNotEmpty() && amount.isNotEmpty()) {
+                    // Create updated expense with same time but updated other fields
+                    val iconResId = getCategoryIconResId(category)
+                    val categoryId = getCategoryId(category)
+                    val updatedExpense = Expense(iconResId, name, category, date, expense.time, amount, categoryId)
+                    
+                    // Update expense in SharedPreferencesManager
+                    sharedPrefsManager.updateExpense(expense, updatedExpense)
+                    
+                    // Show success message and refresh the UI
+                    Snackbar.make(requireView(), "Expense updated successfully", Snackbar.LENGTH_SHORT).show()
+                    loadExpenses()
+                    updateBudgetInfo()
+                    
+                    // Check if budget alert status changed
+                    notificationHelper.checkAndShowBudgetAlertIfNeeded()
+                } else {
+                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+    
+    private fun getCategoryIconResId(category: String): Int {
+        return when (category) {
+            "Food" -> R.drawable.food
+            "Shopping" -> R.drawable.shopping
+            "Transport" -> R.drawable.transport
+            "Health" -> R.drawable.health
+            "Utility" -> R.drawable.utility
+            else -> R.drawable.other
+        }
+    }
+    
+    private fun getCategoryId(category: String): Int {
+        return when (category) {
+            "Food" -> 1
+            "Shopping" -> 2
+            "Transport" -> 3
+            "Health" -> 4
+            "Utility" -> 5
+            else -> 6
+        }
     }
     
     private fun deleteExpense(expense: Expense) {
