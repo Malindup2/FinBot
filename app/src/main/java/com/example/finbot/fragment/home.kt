@@ -109,8 +109,14 @@ class homeFragment : Fragment() {
         limitText.text = "of $currency $budget limit"
         
         // Change colors based on budget status
-        if (percentUsed > 90) {
-            budgetTextView.setTextColor(requireContext().getColor(R.color.shopping)) // Red
+        if (percentUsed >= 100) {
+            // Use red color (transport) when budget is reached or exceeded
+            budgetTextView.setTextColor(requireContext().getColor(R.color.transport)) // Red
+            progressBar.setIndicatorColor(requireContext().getColor(R.color.transport))
+            limitText.setTextColor(requireContext().getColor(R.color.transport))
+        } else if (percentUsed > 90) {
+            // Use purple color (shopping) for high percentage but not over limit
+            budgetTextView.setTextColor(requireContext().getColor(R.color.shopping)) // Purple
             progressBar.setIndicatorColor(requireContext().getColor(R.color.shopping))
         } else if (percentUsed > 75) {
             budgetTextView.setTextColor(requireContext().getColor(R.color.transport)) // Orange
