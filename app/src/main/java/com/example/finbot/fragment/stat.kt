@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import com.example.finbot.R
+import com.example.finbot.model.Earning
 import com.example.finbot.model.Expense
 import com.example.finbot.util.SharedPreferencesManager
 import com.github.mikephil.charting.charts.LineChart
@@ -28,6 +29,7 @@ class statFragment : Fragment() {
     private lateinit var sharedPrefsManager: SharedPreferencesManager
     private lateinit var pieChart: PieChart
     private lateinit var lineChart: LineChart
+    private lateinit var earningsLineChart: LineChart
     private lateinit var totalSpentText: TextView
     private lateinit var highestCategoryText: TextView
     private lateinit var periodChipGroup: ChipGroup
@@ -55,6 +57,7 @@ class statFragment : Fragment() {
         // Initialize views
         pieChart = view.findViewById(R.id.pieChart)
         lineChart = view.findViewById(R.id.lineChart)
+        earningsLineChart = view.findViewById(R.id.earningsLineChart)
         totalSpentText = view.findViewById(R.id.totalSpentText)
         highestCategoryText = view.findViewById(R.id.highestCategoryText)
         periodChipGroup = view.findViewById(R.id.periodChipGroup)
@@ -99,12 +102,16 @@ class statFragment : Fragment() {
             // Get filtered expenses
             val filteredExpenses = getFilteredExpenses(days)
             
+            // Get filtered earnings
+            val filteredEarnings = getFilteredEarnings(days)
+            
             // Update summary cards
             updateSummaryCards(filteredExpenses)
             
             // Update charts
             setupPieChart(pieChart, filteredExpenses)
             setupLineChart(lineChart, filteredExpenses, days)
+            setupEarningsLineChart(earningsLineChart, filteredEarnings, days)
         } catch (e: Exception) {
             // Log the error
             e.printStackTrace()
@@ -116,6 +123,7 @@ class statFragment : Fragment() {
             // Set up empty charts
             setupEmptyPieChart()
             setupEmptyLineChart()
+            setupEmptyEarningsLineChart()
         }
     }
     
@@ -152,6 +160,15 @@ class statFragment : Fragment() {
             e.printStackTrace()
         }
     }
+    
+    private fun setupEmptyEarningsLineChart() {
+        try {
+            earningsLineChart.setNoDataText("No earnings data available")
+            earningsLineChart.invalidate()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     private fun getFilteredExpenses(days: Int): List<Expense> {
         val allExpenses = sharedPrefsManager.getExpenses()
@@ -166,6 +183,25 @@ class statFragment : Fragment() {
             try {
                 val expenseDate = dateFormat.parse(expense.date) ?: Date()
                 expenseDate.after(cutoffDate) || expenseDate == cutoffDate
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+    
+    private fun getFilteredEarnings(days: Int): List<Earning> {
+        val allEarnings = sharedPrefsManager.getEarnings()
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        
+        // Calculate the cutoff date
+        calendar.add(Calendar.DAY_OF_YEAR, -days)
+        val cutoffDate = calendar.time
+        
+        return allEarnings.filter { earning ->
+            try {
+                val earningDate = dateFormat.parse(earning.date) ?: Date()
+                earningDate.after(cutoffDate) || earningDate == cutoffDate
             } catch (e: Exception) {
                 false
             }
@@ -259,7 +295,7 @@ class statFragment : Fragment() {
                     FlexboxLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
                     marginEnd = 16
-                    marginBottom = 16
+
                 }
                 legendItem.layoutParams = itemParams
                 
@@ -317,9 +353,8 @@ class statFragment : Fragment() {
                 if (diff < days) {
                     val dayIndex = days - diff.toInt() - 1
                     val amount = expense.amount.toFloatOrNull() ?: 0f
-                    // Use the result directly instead of trying to reassign to a val
-                    val existingAmount = dailyExpenses[dayIndex] ?: 0f
-                    dailyExpenses[dayIndex] = existingAmount + amount
+                    // Direct update of the map value without intermediate val
+                    dailyExpenses[dayIndex] = (dailyExpenses[dayIndex] ?: 0f) + amount
                 }
             } catch (e: Exception) {
                 // Skip if date parsing fails
@@ -344,6 +379,90 @@ class statFragment : Fragment() {
         dataSet.valueTextColor = Color.BLACK
         dataSet.valueTextSize = 10f
         dataSet.setCircleColor(getColor(requireContext(), R.color.Blue))
+        dataSet.circleRadius = 4f
+        
+        // Create LineData object
+        val lineData = LineData(dataSet)
+        
+        // Customize the Line Chart
+        lineChart.data = lineData
+        lineChart.description.isEnabled = false
+        lineChart.axisLeft.axisMinimum = 0f
+        lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        lineChart.xAxis.granularity = 1f
+        
+        // Adjust x-axis labels based on the period
+        when (days) {
+            PERIOD_WEEK -> {
+                lineChart.xAxis.valueFormatter = com.github.mikephil.charting.formatter.IndexAxisValueFormatter(
+                    arrayOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+                )
+                lineChart.xAxis.labelCount = 7
+            }
+            PERIOD_MONTH -> {
+                lineChart.xAxis.labelCount = 10
+            }
+            PERIOD_YEAR -> {
+                lineChart.xAxis.labelCount = 12
+            }
+        }
+        
+        lineChart.legend.isEnabled = true
+        lineChart.animateX(1000)
+        lineChart.invalidate()
+    }
+    
+    private fun setupEarningsLineChart(lineChart: LineChart, earnings: List<Earning>, days: Int) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        val entries = ArrayList<Entry>()
+        
+        // Create a map to store daily earnings
+        val dailyEarnings = HashMap<Int, Float>()
+        
+        // Initialize with zeros for all days in the selected period
+        for (i in 0 until days) {
+            dailyEarnings[i] = 0f
+        }
+        
+        // Process earnings
+        earnings.forEach { earning ->
+            try {
+                val earningDate = dateFormat.parse(earning.date) ?: return@forEach
+                val earningCalendar = Calendar.getInstance().apply { time = earningDate }
+                
+                // Calculate days difference
+                val diff = (calendar.timeInMillis - earningCalendar.timeInMillis) / (1000 * 60 * 60 * 24)
+                
+                if (diff < days) {
+                    val dayIndex = days - diff.toInt() - 1
+                    val amount = earning.amount.toFloat()
+                    // Direct update of the map value without intermediate val
+                    dailyEarnings[dayIndex] = (dailyEarnings[dayIndex] ?: 0f) + amount
+                }
+            } catch (e: Exception) {
+                // Skip if date parsing fails
+            }
+        }
+        
+        // Create entries from the daily earnings map
+        for (i in 0 until days) {
+            entries.add(Entry(i.toFloat(), dailyEarnings[i] ?: 0f))
+        }
+        
+        // If no data, show empty state
+        if (entries.isEmpty() || entries.all { it.y <= 0f }) {
+            lineChart.setNoDataText("No earnings data available")
+            lineChart.invalidate()
+            return
+        }
+        
+        // Create dataset
+        val dataSet = LineDataSet(entries, "Earnings Trends")
+        dataSet.color = getColor(requireContext(), R.color.progress)
+        dataSet.valueTextColor = Color.BLACK
+        dataSet.valueTextSize = 10f
+        dataSet.setCircleColor(getColor(requireContext(), R.color.progress))
         dataSet.circleRadius = 4f
         
         // Create LineData object

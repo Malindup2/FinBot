@@ -90,7 +90,6 @@ class profileFragment : Fragment() {
         view.findViewById<Button>(R.id.saveNotificationButton).setOnClickListener { saveNotificationSettings() }
         
         // Backup & Restore
-        view.findViewById<Button>(R.id.exportJsonButton).setOnClickListener { exportToJson() }
         view.findViewById<Button>(R.id.exportTextButton).setOnClickListener { exportToText() }
         view.findViewById<Button>(R.id.restoreDataButton).setOnClickListener { restoreFromBackup() }
     }
@@ -182,15 +181,6 @@ class profileFragment : Fragment() {
         }
         
         showSnackbar("Notification settings saved")
-    }
-    
-    private fun exportToJson() {
-        val file = backupRestoreUtil.exportToJson()
-        if (file != null) {
-            shareFile(file, "application/json")
-        } else {
-            showSnackbar("Failed to create JSON backup")
-        }
     }
     
     private fun exportToText() {
