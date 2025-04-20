@@ -1,6 +1,7 @@
 package com.example.finbot.fragment
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.example.finbot.adapter.EarningsAdapter
 import com.example.finbot.model.Earning
 import com.example.finbot.util.SharedPreferencesManager
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -94,9 +96,24 @@ class earningFragment : Fragment() {
         dateInput.setTextColor(resources.getColor(R.color.black, null))
         amountInput.setTextColor(resources.getColor(R.color.black, null))
 
+        // Set up calendar for date selection
+        val calendar = Calendar.getInstance()
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        
         // Set default date
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        dateInput.text = currentDate
+        dateInput.text = dateFormatter.format(calendar.time)
+        
+        // Setup date picker when clicking on the date field
+        dateInput.setOnClickListener {
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                dateInput.text = dateFormatter.format(calendar.time)
+            }, year, month, day).show()
+        }
 
         // Show dialog
         AlertDialog.Builder(requireContext(), R.style.CustomDialogTheme)
@@ -131,6 +148,32 @@ class earningFragment : Fragment() {
         
         dateInput.setTextColor(resources.getColor(R.color.black, null))
         amountInput.setTextColor(resources.getColor(R.color.black, null))
+        
+        // Set up calendar for date selection
+        val calendar = Calendar.getInstance()
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        
+        try {
+            // Parse existing date
+            val date = dateFormatter.parse(earning.date)
+            if (date != null) {
+                calendar.time = date
+            }
+        } catch (e: Exception) {
+            // Use current date if parsing fails
+        }
+        
+        // Setup date picker when clicking on the date field
+        dateInput.setOnClickListener {
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                dateInput.text = dateFormatter.format(calendar.time)
+            }, year, month, day).show()
+        }
 
         // Show dialog
         AlertDialog.Builder(requireContext(), R.style.CustomDialogTheme)
