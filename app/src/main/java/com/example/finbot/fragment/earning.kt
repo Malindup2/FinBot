@@ -1,3 +1,5 @@
+package com.example.finbot.fragment
+
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -193,8 +195,9 @@ class earningFragment : Fragment() {
         
         totalEarningsText.text = "$currency ${String.format("%.2f", totalEarnings)}"
 
-        // Assuming savings is 20% of earnings
-        val totalSavings = totalEarnings * 0.2
+        // Calculate real savings: total earnings - total expenses
+        val totalExpenses = sharedPrefsManager.getCurrentMonthExpenses().toDouble()
+        val totalSavings = totalEarnings - totalExpenses
         totalSavingsText.text = "$currency ${String.format("%.2f", totalSavings)}"
     }
 }

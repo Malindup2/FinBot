@@ -158,15 +158,17 @@
                     android:layout_marginBottom="16dp"
                     />
                 <!-- Dynamic Legend Container -->
-                <LinearLayout
+                <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/legendContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    app:flexWrap="wrap"
+                    app:alignItems="flex_start"
+                    app:flexDirection="row">
 
                     <!-- Legend Items will be dynamically added here -->
-                </LinearLayout>
+                </com.google.android.flexbox.FlexboxLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

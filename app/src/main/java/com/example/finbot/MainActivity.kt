@@ -16,8 +16,7 @@ import com.example.finbot.fragments.homeFragment
 import com.example.finbot.fragment.AddExpenseFragment
 import com.example.finbot.util.NotificationHelper
 import com.example.finbot.util.SharedPreferencesManager
-
-import earningFragment
+import com.example.finbot.fragment.earningFragment
 
 class MainActivity : AppCompatActivity() {
 

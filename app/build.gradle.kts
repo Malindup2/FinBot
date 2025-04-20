@@ -61,6 +61,9 @@ dependencies {
     // Added for data persistence and backup
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    
+    // FlexboxLayout for flexible layouts
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -16,6 +16,7 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.ChipGroup
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +31,7 @@ class statFragment : Fragment() {
     private lateinit var totalSpentText: TextView
     private lateinit var highestCategoryText: TextView
     private lateinit var periodChipGroup: ChipGroup
-    private lateinit var legendContainer: LinearLayout
+    private lateinit var legendContainer: FlexboxLayout
     
     private var currentPeriod = PERIOD_WEEK
     
@@ -94,15 +95,62 @@ class statFragment : Fragment() {
     }
 
     private fun loadData(days: Int) {
-        // Get filtered expenses
-        val filteredExpenses = getFilteredExpenses(days)
-        
-        // Update summary cards
-        updateSummaryCards(filteredExpenses)
-        
-        // Update charts
-        setupPieChart(pieChart, filteredExpenses)
-        setupLineChart(lineChart, filteredExpenses, days)
+        try {
+            // Get filtered expenses
+            val filteredExpenses = getFilteredExpenses(days)
+            
+            // Update summary cards
+            updateSummaryCards(filteredExpenses)
+            
+            // Update charts
+            setupPieChart(pieChart, filteredExpenses)
+            setupLineChart(lineChart, filteredExpenses, days)
+        } catch (e: Exception) {
+            // Log the error
+            e.printStackTrace()
+            
+            // Show empty state with error message
+            totalSpentText.text = "${sharedPrefsManager.getCurrency()} 0.00"
+            highestCategoryText.text = "None"
+            
+            // Set up empty charts
+            setupEmptyPieChart()
+            setupEmptyLineChart()
+        }
+    }
+    
+    private fun setupEmptyPieChart() {
+        try {
+            val entries = ArrayList<PieEntry>()
+            entries.add(PieEntry(100f, "No Data"))
+            val dataSet = PieDataSet(entries, "Expense Distribution")
+            dataSet.colors = listOf(Color.LTGRAY)
+            dataSet.valueTextColor = Color.WHITE
+            dataSet.valueTextSize = 12f
+            
+            val pieData = PieData(dataSet)
+            pieChart.data = pieData
+            pieChart.setUsePercentValues(true)
+            pieChart.description.isEnabled = false
+            pieChart.legend.isEnabled = false
+            pieChart.centerText = "No expense data"
+            pieChart.animateY(1000)
+            pieChart.invalidate()
+            
+            // Clear legend
+            legendContainer.removeAllViews()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    
+    private fun setupEmptyLineChart() {
+        try {
+            lineChart.setNoDataText("No expense data available")
+            lineChart.invalidate()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getFilteredExpenses(days: Int): List<Expense> {
@@ -144,91 +192,83 @@ class statFragment : Fragment() {
     }
 
     private fun setupPieChart(pieChart: PieChart, expenses: List<Expense>) {
-        // Group expenses by category
-        val categoryMap = HashMap<String, Double>()
-        expenses.forEach { expense ->
-            val amount = expense.amount.toDoubleOrNull() ?: 0.0
-            categoryMap[expense.category] = (categoryMap[expense.category] ?: 0.0) + amount
-        }
-        
-        // Create pie chart entries
-        val entries = ArrayList<PieEntry>()
-        val totalAmount = categoryMap.values.sum()
-        
-        // If no data, show empty state
-        if (totalAmount <= 0) {
-            entries.add(PieEntry(100f, "No Data"))
+        try {
+            // Group expenses by category
+            val categoryMap = HashMap<String, Double>()
+            expenses.forEach { expense ->
+                val amount = expense.amount.toDoubleOrNull() ?: 0.0
+                categoryMap[expense.category] = (categoryMap[expense.category] ?: 0.0) + amount
+            }
+            
+            // Create pie chart entries
+            val entries = ArrayList<PieEntry>()
+            val totalAmount = categoryMap.values.sum()
+            
+            // If no data, show empty state
+            if (totalAmount <= 0) {
+                setupEmptyPieChart()
+                return
+            }
+            
+            // Define colors for categories
+            val colorMap = mapOf(
+                "Food" to getColor(requireContext(), R.color.food),
+                "Shopping" to getColor(requireContext(), R.color.shopping),
+                "Transport" to getColor(requireContext(), R.color.transport),
+                "Health" to getColor(requireContext(), R.color.health),
+                "Utility" to getColor(requireContext(), R.color.Blue),
+                "Other" to Color.DKGRAY
+            )
+            
+            // Add entries for each category with percentage
+            val colors = ArrayList<Int>()
+            categoryMap.forEach { (category, amount) ->
+                val percentage = (amount / totalAmount * 100).toFloat()
+                entries.add(PieEntry(percentage, category))
+                
+                // Use predefined color or default to dark gray
+                colors.add(colorMap[category] ?: Color.DKGRAY)
+            }
+            
+            // Create dataset
             val dataSet = PieDataSet(entries, "Expense Distribution")
-            dataSet.colors = listOf(Color.LTGRAY)
+            dataSet.colors = colors
             dataSet.valueTextColor = Color.WHITE
             dataSet.valueTextSize = 12f
             
+            // Create PieData object
             val pieData = PieData(dataSet)
+            
+            // Customize the Pie Chart
             pieChart.data = pieData
             pieChart.setUsePercentValues(true)
             pieChart.description.isEnabled = false
             pieChart.legend.isEnabled = false
-            pieChart.centerText = "No expense data"
             pieChart.animateY(1000)
             pieChart.invalidate()
             
-            // Clear legend
+            // Update legend using FlexboxLayout
             legendContainer.removeAllViews()
-            return
-        }
-        
-        // Define colors for categories
-        val colorMap = mapOf(
-            "Food" to getColor(requireContext(), R.color.food),
-            "Shopping" to getColor(requireContext(), R.color.shopping),
-            "Transport" to getColor(requireContext(), R.color.transport),
-            "Health" to getColor(requireContext(), R.color.health),
-            "Utility" to getColor(requireContext(), R.color.Blue),
-            "Other" to Color.DKGRAY
-        )
-        
-        // Add entries for each category with percentage
-        val colors = ArrayList<Int>()
-        categoryMap.forEach { (category, amount) ->
-            val percentage = (amount / totalAmount * 100).toFloat()
-            entries.add(PieEntry(percentage, category))
             
-            // Use predefined color or default to dark gray
-            colors.add(colorMap[category] ?: Color.DKGRAY)
-        }
-        
-        // Create dataset
-        val dataSet = PieDataSet(entries, "Expense Distribution")
-        dataSet.colors = colors
-        dataSet.valueTextColor = Color.WHITE
-        dataSet.valueTextSize = 12f
-        
-        // Create PieData object
-        val pieData = PieData(dataSet)
-        
-        // Customize the Pie Chart
-        pieChart.data = pieData
-        pieChart.setUsePercentValues(true)
-        pieChart.description.isEnabled = false
-        pieChart.legend.isEnabled = false
-        pieChart.animateY(1000)
-        pieChart.invalidate()
-        
-        // Update legend
-        legendContainer.removeAllViews()
-        legendContainer.orientation = LinearLayout.HORIZONTAL
-        
-        entries.forEachIndexed { index, entry ->
-            val legendItem = createLegendItem(colors[index], entry.label, "${entry.value.toInt()}%")
-            
-            val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            layoutParams.setMargins(0, 0, 16, 0)
-            legendItem.layoutParams = layoutParams
-            
-            legendContainer.addView(legendItem)
+            // Add legend items directly to FlexboxLayout
+            entries.forEachIndexed { index, entry ->
+                // Create legend item
+                val legendItem = createLegendItem(colors[index], entry.label, "${entry.value.toInt()}%")
+                val itemParams = FlexboxLayout.LayoutParams(
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    marginEnd = 16
+                    marginBottom = 16
+                }
+                legendItem.layoutParams = itemParams
+                
+                // Add directly to FlexboxLayout
+                legendContainer.addView(legendItem)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            setupEmptyPieChart()
         }
     }
 
@@ -277,7 +317,9 @@ class statFragment : Fragment() {
                 if (diff < days) {
                     val dayIndex = days - diff.toInt() - 1
                     val amount = expense.amount.toFloatOrNull() ?: 0f
-                    dailyExpenses[dayIndex] = (dailyExpenses[dayIndex] ?: 0f) + amount
+                    // Use the result directly instead of trying to reassign to a val
+                    val existingAmount = dailyExpenses[dayIndex] ?: 0f
+                    dailyExpenses[dayIndex] = existingAmount + amount
                 }
             } catch (e: Exception) {
                 // Skip if date parsing fails
