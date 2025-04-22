@@ -12,6 +12,7 @@ import com.example.finbot.R
 import com.example.finbot.model.Expense
 import com.example.finbot.util.NotificationHelper
 import com.example.finbot.util.SharedPreferencesManager
+import com.example.finbot.util.SnackbarUtil
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -100,7 +101,7 @@ class AddExpenseFragment : Fragment() {
             sharedPrefsManager.addExpense(expense)
             
             // Show success message
-            Snackbar.make(requireView(), "Expense saved successfully", Snackbar.LENGTH_SHORT).show()
+            SnackbarUtil.showSuccess(requireView(), "Expense saved successfully", 3500)
             
             // Check if budget alert should be shown
             notificationHelper.checkAndShowBudgetAlertIfNeeded()

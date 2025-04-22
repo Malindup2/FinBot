@@ -190,8 +190,6 @@ class SharedPreferencesManager(context: Context) {
             .filter {
                 try {
                     val parts = it.date.split("-")
-                    // Date format is expected to be yyyy-MM-dd or MM-dd-yyyy
-                    // Adjust parsing based on your actual format
                     val expMonth = parts[1].toInt() - 1 // Month is 0-based in Calendar
                     val expYear = if (parts[0].length == 4) parts[0].toInt() else parts[2].toInt()
                     expMonth == currentMonth && expYear == currentYear

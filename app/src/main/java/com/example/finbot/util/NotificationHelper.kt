@@ -77,7 +77,8 @@ class NotificationHelper(private val context: Context) {
             currentSpending >= budget -> "You have exceeded your monthly budget of $currency $budget"
             else -> "You've used $percentUsed% of your monthly budget ($currency $currentSpending of $currency $budget)"
         }
-        
+
+        // Create the notification
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_BUDGET)
             .setSmallIcon(R.drawable.logo)
             .setContentTitle("Budget Alert")

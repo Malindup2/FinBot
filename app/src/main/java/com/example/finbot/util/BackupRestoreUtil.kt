@@ -118,7 +118,7 @@ class BackupRestoreUtil(private val context: Context) {
                 writer.write("EXPENSE TRANSACTIONS\n")
                 writer.write("-----------------------\n")
                 if (expenses.isEmpty()) {
-                    writer.write("No expenses recorded\n")
+                    writer.write("No expenses recorded yet\n")
                 } else {
                     expenses.forEach { expense ->
                         writer.write("${expense.date} ${expense.time}: ${expense.category} - $currency ${expense.amount}\n")
@@ -128,7 +128,7 @@ class BackupRestoreUtil(private val context: Context) {
                 writer.write("\nEARNING TRANSACTIONS\n")
                 writer.write("-----------------------\n")
                 if (earnings.isEmpty()) {
-                    writer.write("No earnings recorded\n")
+                    writer.write("No earnings recorded yet\n")
                 } else {
                     earnings.forEach { earning ->
                         writer.write("${earning.date}: ${earning.category} - $currency ${earning.amount}\n")

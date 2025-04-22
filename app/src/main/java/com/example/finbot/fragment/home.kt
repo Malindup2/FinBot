@@ -15,8 +15,8 @@ import com.example.finbot.adapter.ExpenseAdapter
 import com.example.finbot.model.Expense
 import com.example.finbot.util.NotificationHelper
 import com.example.finbot.util.SharedPreferencesManager
+import com.example.finbot.util.SnackbarUtil
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -213,7 +213,7 @@ class homeFragment : Fragment() {
                     sharedPrefsManager.updateExpense(expense, updatedExpense)
                     
                     // Show success message and refresh the UI
-                    Snackbar.make(requireView(), "Expense updated successfully", Snackbar.LENGTH_SHORT).show()
+                    SnackbarUtil.showSuccess(requireView(), "Expense updated successfully", 3000)
                     loadExpenses()
                     updateBudgetInfo()
                     
@@ -255,7 +255,7 @@ class homeFragment : Fragment() {
             .setMessage("Are you sure you want to delete this expense?")
             .setPositiveButton("Delete") { _, _ ->
                 sharedPrefsManager.deleteExpense(expense)
-                Snackbar.make(requireView(), "Expense deleted", Snackbar.LENGTH_SHORT).show()
+                SnackbarUtil.showWarning(requireView(), "Expense deleted", 2500)
                 loadExpenses()
                 updateBudgetInfo()
                 

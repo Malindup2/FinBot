@@ -16,6 +16,7 @@ import com.example.finbot.R
 import com.example.finbot.util.BackupRestoreUtil
 import com.example.finbot.util.NotificationHelper
 import com.example.finbot.util.SharedPreferencesManager
+import com.example.finbot.util.SnackbarUtil
 import com.google.android.material.snackbar.Snackbar
 
 class profileFragment : Fragment() {
@@ -214,6 +215,6 @@ class profileFragment : Fragment() {
     }
     
     private fun showSnackbar(message: String) {
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+        SnackbarUtil.showSuccess(requireView(), message, 3000)
     }
 }
